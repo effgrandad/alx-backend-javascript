@@ -1,3 +1,5 @@
+//eslint-disable no-underscore-dangle
+
 export default class Car {
   constructor(brand, motor, color) {
     this._brand = brand;
@@ -6,11 +8,6 @@ export default class Car {
   }
 
   cloneCar() {
-    const clonedCar = new this.constructor[Symbol.species]();
-    return clonedCar;
-  }
-
-  static get [Symbol.species]() {
-    return this;
+     return new this.constructor(this._brand, this._motor, this._color);
   }
 }

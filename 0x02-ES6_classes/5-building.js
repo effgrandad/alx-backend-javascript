@@ -1,26 +1,31 @@
+//eslint-disable class-methods-use-this
+//eslint-disable no-underscore-dangle
+
 
 export default class Building {
   constructor(sqft) {
-    if (new.target !== Building && new.target.prototype.evacuationWarningMessage === undefined) {
+    if (new.target !== Building && this.evacuationWarningMessage === undefined) {
       throw new Error('Class extending Building must override evacuationWarningMessage');
+    } else {
+      if (typeof sqft !== 'number') {
+        throw new TypeError('Provide valid dimensions');
+      }
+      this._sqft = sqft;
     }
-    this._sqft = sqft;
   }
 
   get sqft() {
     return this._sqft;
   }
 
-  set sqft(sqft) {
-    if (sqft === undefined || sqft === null) {
-      throw new Error('sqft must be defined');
-    } else if (typeof sqft === 'string') {
-      throw new Error('sqft must be number');
-    } else if (typeof sqft !== 'number' || sqft <= 0) {
-      throw new Error('sqft must be positive number');
-    } else if (!Number.isFinite(sqft)) {
-      throw new Error('sqft must be a finite number');
+  set sqft(dimensions) {
+    if (typeof dimensions !== 'number') {
+      throw new TypeError('Provide valid dimensions');
     }
-    this._sqft = Number(sqft);
+    this._sqft = dimensions;
+  }
+
+  evacuationWarningMessage() {
+    throw new Error('Class extending Building must override evacuationWarningMessage');
   }
 }

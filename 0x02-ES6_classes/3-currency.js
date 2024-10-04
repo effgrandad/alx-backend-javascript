@@ -1,30 +1,43 @@
+#!/usr/bin/env node
+
+
 export default class Currency {
   constructor(code, name) {
-    this.code = code;
-    this.name = name;
+    if (typeof code !== 'string') {
+      throw new TypeError('Code must be a string');
+    }
+    if (typeof name !== 'string') {
+      throw new TypeError('Name must be a string');
+    }
+    this._code = code;
+    this._name = name;
   }
-
+  //first Getter
   get code() {
     return this._code;
-  }
-
-  set code(value) {
-    this._code = value;
   }
 
   get name() {
     return this._name;
   }
 
-  set name(value) {
-    this._name = value;
+  //followed by setters
+
+  set code(theCode) {
+    if (typeof theCode !== 'string') {
+      throw new TypeError('Code must be a string');
+    }
+    this._code = theCode;
   }
 
-  /**
-   * Generates the whole string representation for this currency.
-   * @returns {String}
-   */
+  set name(theName) {
+    if (typeof theName !== 'string') {
+      throw new TypeError('Name must be a string');
+    }
+    this._name = theName;
+  }
+
   displayFullCurrency() {
-    return `${this.name} (${this.code})`;
+    return `${this._name} (${this._code})`;
   }
 }

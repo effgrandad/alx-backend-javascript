@@ -1,20 +1,51 @@
+//eslint-disable valid-typeof
+//eslint-disable no-underscore-dangle
+
+function validateType(variable, type) {
+  return (typeof variable === type);
+}
 export default class HolbertonClass {
   constructor(size, location) {
-    if (typeof size === 'number') {
-      this._size = size;
+    if (!validateType(size, 'number')) {
+      throw new TypeError('size must be a string');
     }
-    if (typeof location === 'string') {
-      this._location = location;
+    if (!validateType(location, 'string')) {
+      throw new TypeError('location must be a string');
     }
+
+    this._size = size;
+    this._location = location;
   }
 
-  // eslint-disable-next-line consistent-return
-  [Symbol.toPrimitive](value) {
-    if (value === 'number') {
-      return this._size;
+  //specify getter for the object's props
+  get size() {
+    return this._size;
+  }
+
+  get location() {
+    return this._location;
+  }
+
+  //specify setters for the object's props
+  set size(newSize) {
+    if (!validateType(newSize, 'number')) {
+      throw new TypeError('size should  be a number');
     }
-    if (value === 'string') {
-      return this._location;
+    this._size = newSize;
+  }
+
+  set location(newLocation) {
+    if (!validateType(newLocation, 'string')) {
+      throw new TypeError('location should be a string');
     }
+    this._location = newLocation;
+  }
+
+  valueOf() {
+    return this._size;
+  }
+
+  toString() {
+    return this._location;
   }
 }

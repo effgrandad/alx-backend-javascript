@@ -2,29 +2,36 @@ import Building from './5-building';
 
 export default class SkyHighBuilding extends Building {
   constructor(sqft, floors) {
+    if (typeof sqft !== 'number' || typeof floors !== 'number') {
+      throw new TypeError('Provide valid dimensions and number of floors');
+    }
     super(sqft);
     this._floors = floors;
+  }
+
+  get sqft() {
+    return this._sqft;
   }
 
   get floors() {
     return this._floors;
   }
 
-  set floors(floors) {
-    if (floors === undefined || floors === null) {
-      throw new Error('floors must be defined');
-    } else if (typeof floors === 'string') {
-      throw new Error('floors must be number');
-    } else if (typeof floors !== 'number' || floors <= 0) {
-      throw new Error('floors must be positive number');
-    } else if (!Number.isFinite(floors)) {
-      throw new Error('floors must be a finite number');
+  set sqft(feet) {
+    if (typeof feet !== 'number') {
+      throw new TypeError('Provide Valid Dimensions');
     }
-    this._floors = Number(floors);
+    this._sqft = feet;
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  set floors(newFloors) {
+    if (typeof newFloors !== 'number') {
+      throw new TypeError('Provide valid number of floors');
+    }
+    this._floors = newFloors;
+  }
+
   evacuationWarningMessage() {
-    return `Evacuate slowly the ${this._floors} floors`;
+    return `Evacuate slowly the ${this.floors} floors`;
   }
 }

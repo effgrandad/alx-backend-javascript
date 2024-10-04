@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * dipiction of a class room
  */
