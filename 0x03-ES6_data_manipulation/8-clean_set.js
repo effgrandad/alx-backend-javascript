@@ -1,6 +1,4 @@
 export default function cleanSet(set, startString) {
-
-// checks type of arguments at runtime
 const parts = [];
   if (!set || !startString || !(set instanceof Set) || typeof startString !== 'string') {
     return '';

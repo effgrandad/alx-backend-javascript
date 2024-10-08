@@ -1,5 +1,3 @@
-//eslint-disable no protytype-builtins
-
 export default function updateStudentGradeByCity(students, city, newGrades) {
   const defaultGrade = { grade: 'N/A' };
 
