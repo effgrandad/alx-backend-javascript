@@ -1,64 +1,82 @@
+#!/usr/bin/env node
+
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-vars */
+
+const { promisify } = require('util');
+const { readFile } = require('fs');
 const express = require('express');
-const { readFile } = require('fs').promises;
 
-// Create Express application
+const PORT = 1245;
+const HOST = '127.0.0.1';
 const app = express();
+const readFileAsync = promisify(readFile);
 
-// Define route for the '/' endpoint
-app.get('/', (req, res) => {
-  res.send('Hello Holberton School!\n');
-});
+function parseCsvLine(line) {
+  return line.split(',').map((item) => item.trim());
+}
 
-// Define route for the '/students' endpoint
-app.get('/students', async (req, res) => {
+async function countStudents(fileName) {
+  const students = {};
+  const fields = {};
+
   try {
-    // Read the database file asynchronously
-    const data = await readFile(process.argv[2], 'utf8');
+    const data = await readFileAsync(fileName, 'utf-8');
+    const lines = data.trim().split('\n');
+    lines.shift(); // Remove header line
+    lines.forEach((line) => {
+      const [firstName, , , field] = parseCsvLine(line);
 
-    const lines = data.trim().split('\n').filter((line) => line.trim() !== '');
+      students[field] = students[field] || [];
+      students[field].push(firstName);
 
-    const totalStudents = lines.length - 1;
+      fields[field] = (fields[field] || 0) + 1;
+    });
 
-    const studentsByField = {};
-    const firstNamesByField = {};
+    const totalStudents = lines.length;
+    const results = {
+      totalStudents,
+      fields: {},
+    };
 
-    /* eslint-disable no-plusplus */
-    for (let i = 1; i < lines.length; i++) {
-      const fields = lines[i].split(',');
-      const field = fields[3].trim();
-      const firstName = fields[0].trim();
-
-      // Increment count for the field
-      studentsByField[field] = (studentsByField[field] || 0) + 1;
-
-      // Store first name for the field
-      firstNamesByField[field] = (firstNamesByField[field] || []).concat(firstName);
-    }
-
-    // Prepare response body
-    const response = [];
-    response.push('This is the list of our students');
-    response.push(`Number of students: ${totalStudents}`);
-    for (const field in studentsByField) {
-      if (Object.prototype.hasOwnProperty.call(studentsByField, field)) {
-        const count = studentsByField[field];
-        const firstNames = firstNamesByField[field].join(', ');
-        response.push(`Number of students in ${field}: ${count}. List: ${firstNames}`);
+    for (const [key, value] of Object.entries(fields)) {
+      if (key !== 'field') {
+        results.fields[key] = {
+          numberOfStudents: value,
+          studentList: students[key].join(', '),
+        };
       }
     }
 
-    // Send response body for '/students' endpoint
-    res.send(`${response.join('\n')}\n`);
+    return results;
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error\n');
+    throw new Error('Cannot load the database');
   }
+}
+
+app.get('/', (req, resp) => {
+  resp.statusCode = 200;
+  resp.setHeader('Content-Type', 'text/plain');
+  resp.setHeader('X-Served-By', 'itsfoss');
+  resp.send('Hello Holberton School!');
 });
 
-// Start server on port 1245
-const port = 1245;
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
+app.get('/students', (req, resp) => {
+  countStudents(process.argv[2]).then((data) => {
+    resp.write('This is the list of our students\n');
+    resp.write(`Number of students: ${data.totalStudents}\n`);
+    for (const [fieldName, fieldData] of Object.entries(data.fields)) {
+      resp.write(`Number of students in ${fieldName}: ${fieldData.numberOfStudents}. List: ${fieldData.studentList}\n`);
+    }
+
+    resp.end();
+  })
+    .catch((error) => {
+      resp.statusCode = 404;
+      resp.write('This is the list of our students\n');
+      resp.end('Cannot load the database\n');
+    });
 });
+app.listen(PORT, HOST, () => {});
 
 module.exports = app;

@@ -1,10 +1,12 @@
 import fs from 'fs';
 
+// Function that reads the database asynchronously
 const readDatabase = (filePath) => new Promise((resolve, reject) => {
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
       reject(err);
     } else {
+      // Process the data to extract first names per field
       const lines = data.trim().split('\n').filter((line) => line.trim() !== '');
       const studentsByField = {};
 
