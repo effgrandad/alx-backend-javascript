@@ -1,14 +1,18 @@
 const express = require('express');
 const { readFile } = require('fs').promises;
 
+// Create Express application
 const app = express();
 
+// Define route for the '/' endpoint
 app.get('/', (req, res) => {
   res.send('Hello Holberton School!\n');
 });
 
+// Define route for the '/students' endpoint
 app.get('/students', async (req, res) => {
   try {
+    // Read the database file asynchronously
     const data = await readFile(process.argv[2], 'utf8');
 
     const lines = data.trim().split('\n').filter((line) => line.trim() !== '');
@@ -24,9 +28,14 @@ app.get('/students', async (req, res) => {
       const field = fields[3].trim();
       const firstName = fields[0].trim();
 
+      // Increment count for the field
       studentsByField[field] = (studentsByField[field] || 0) + 1;
+
+      // Store first name for the field
       firstNamesByField[field] = (firstNamesByField[field] || []).concat(firstName);
     }
+
+    // Prepare response body
     const response = [];
     response.push('This is the list of our students');
     response.push(`Number of students: ${totalStudents}`);
@@ -38,6 +47,7 @@ app.get('/students', async (req, res) => {
       }
     }
 
+    // Send response body for '/students' endpoint
     res.send(`${response.join('\n')}\n`);
   } catch (error) {
     console.error(error);
@@ -45,9 +55,10 @@ app.get('/students', async (req, res) => {
   }
 });
 
+// Start server on port 1245
 const port = 1245;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
 
-module.exports = app;i
+module.exports = app;
