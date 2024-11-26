@@ -18,16 +18,15 @@ app.get('/students', async (req, res) => {
     const studentsByField = {};
     const firstNamesByField = {};
 
+    /* eslint-disable no-plusplus */
     for (let i = 1; i < lines.length; i++) {
       const fields = lines[i].split(',');
       const field = fields[3].trim();
       const firstName = fields[0].trim();
 
       studentsByField[field] = (studentsByField[field] || 0) + 1;
-
       firstNamesByField[field] = (firstNamesByField[field] || []).concat(firstName);
     }
-
     const response = [];
     response.push('This is the list of our students');
     response.push(`Number of students: ${totalStudents}`);
@@ -51,4 +50,4 @@ app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
 
-module.exports = app;
+module.exports = app;i
