@@ -1,21 +1,15 @@
-#!/usr/bin/env node
-
-/* eslint-disable */
-
-const sinon = require('sinon');
-const { expect } = require('chai');
-const { getPaymentTokenFromAPI } = require('./6-payment_token');
+const assert = require('assert');
+const getPaymentTokenFromAPI = require('./6-payment_token');
 
 describe('getPaymentTokenFromAPI', () => {
-  it('getPaymentTokenFromAPI', (done) => {
-    getPaymentTokenFromAPI(true)
-      .then((resp) => {
-        expect(resp.data).to.be.string;
-        expect(resp.data).to.equals('Successful response from the API');
-      });
-    done()
-      .catch((error) => {
-        done(error);
-      });
-  });
+    it('should return a promise with successful response when success is true', (done) => {
+        getPaymentTokenFromAPI(true)
+            .then((response) => {
+                assert.deepStrictEqual(response, { data: 'Successful response from the API' });
+                done();
+            })
+            .catch((error) => {
+                done(error);
+            });
+    });
 });

@@ -3,8 +3,8 @@
 /* eslint-disable consistent-return */
 function calculateNumber(type, a, b) {
   try {
-    const roundedA = Math.round(a);
-    const roundedB = Math.round(b);
+    const roundeda = Math.round(a);
+    const roundedb = Math.round(b);
     if (type === 'SUM') {
       return roundeda + roundedb;
     } if (type === 'MULTIPLY') {
